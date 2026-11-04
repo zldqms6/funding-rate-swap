@@ -1,0 +1,6 @@
+{
+  "network": "studionet",
+  "deployments": [
+    {"name": "FundingRateSwap", "address": "0x19d9723C681C74C755bEf8413F5a9E6134731B4E", "source": "contracts/funding_rate_swap.py"}
+  ]
+}

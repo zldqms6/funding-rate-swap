@@ -1,0 +1,10 @@
+{
+  "name": "funding-rate-swap",
+  "version": "1.0.0",
+  "description": "Perpetual futures funding-rate swap settled on a multi-venue median, on GenLayer",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "genlayer-js": "^1.1.8"
+  }
+}

@@ -1,0 +1,20 @@
+# Copy to .github/workflows/glcheck.yml in a repo that has deployments.json at its root.
+# Fails the run when a listed address no longer runs the committed source.
+name: glcheck
+on:
+  push:
+  schedule:
+    - cron: "17 3 * * *"   # once a day, in case someone redeploys without committing
+  workflow_dispatch:
+jobs:
+  deployed-source:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Fetch glcheck
+        run: curl -fsSL https://raw.githubusercontent.com/zldqms6/glcheck/main/glcheck.py -o glcheck.py
+      - name: Check every deployment
+        run: python glcheck.py manifest deployments.json

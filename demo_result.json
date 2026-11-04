@@ -1,0 +1,470 @@
+{
+  "contract": "0x19d9723C681C74C755bEf8413F5a9E6134731B4E",
+  "network": "studionet",
+  "created": 1793778496,
+  "fixings": [
+    {
+      "label": "btc-1014",
+      "asset": "BTC",
+      "from": 1791936000,
+      "to": 1792022400,
+      "why": "Binance -0.44 bp vs Hyperliquid +2.79 bp on the same day",
+      "tx": {
+        "hash": "0x0d52dc40867b738622019f1eb1abf566495cdeabb34027c32fe4e9f07aaf363b",
+        "status": "ACCEPTED",
+        "exec": "SUCCESS",
+        "error": null,
+        "votes": [
+          "AGREE",
+          "IDLE",
+          "IDLE",
+          "AGREE",
+          "AGREE"
+        ],
+        "rotations_left": "3",
+        "message": "{\"readable\":\"{\\\"asset\\\":\\\"BTC\\\"\\\"cached\\\":false\\\"from\\\":1791936000\\\"median\\\":\\\"170451515011700\\\"\\\"to\\\":1792022400\\\"used\\\":[\\\"binance\\\",\\\"gate\\\",\\\"hyperliquid\\\",\\\"kucoin\\\",\\\"okx\\\",]\\\"venues\\\":{\\\"binance\\\":{\\\"n\\\":3\\\"sum\\\":\\\"-43950000000000\\\"}\\\"gate\\\":{\\\"n\\\":3\\\"sum\\\":\\\"135000000000000\\\"}\\\"hyperliquid\\\":{\\\"n\\\":24\\\"sum\\\":\\\"278800500000000\\\"}\\\"kucoin\\\":{\\\"n\\\":3\\\"sum\\\":\\\"205000000000000\\\"}\\\"okx\\\":{\\\"n\\\":3\\\"sum\\\":\\\"170451515011700\\\"}}}\"}"
+      },
+      "stored": {
+        "asset": "BTC",
+        "from": 1791936000,
+        "median": "170451515011700",
+        "to": 1792022400,
+        "used": [
+          "binance",
+          "gate",
+          "hyperliquid",
+          "kucoin",
+          "okx"
+        ],
+        "venues": {
+          "binance": {
+            "n": 3,
+            "sum": "-43950000000000"
+          },
+          "gate": {
+            "n": 3,
+            "sum": "135000000000000"
+          },
+          "hyperliquid": {
+            "n": 24,
+            "sum": "278800500000000"
+          },
+          "kucoin": {
+            "n": 3,
+            "sum": "205000000000000"
+          },
+          "okx": {
+            "n": 3,
+            "sum": "170451515011700"
+          }
+        }
+      }
+    },
+    {
+      "label": "btc-1011",
+      "asset": "BTC",
+      "from": 1791676800,
+      "to": 1791763200,
+      "why": "a negative funding day",
+      "tx": {
+        "hash": "0xb57227975ea565f59dbeec2070373c151dc4301fd311514547f3c78746f51bad",
+        "status": "ACCEPTED",
+        "exec": "SUCCESS",
+        "error": null,
+        "votes": [
+          "IDLE",
+          "AGREE",
+          "AGREE",
+          "IDLE",
+          "AGREE"
+        ],
+        "rotations_left": "3",
+        "message": "{\"readable\":\"{\\\"asset\\\":\\\"BTC\\\"\\\"cached\\\":false\\\"from\\\":1791676800\\\"median\\\":\\\"-21000000000000\\\"\\\"to\\\":1791763200\\\"used\\\":[\\\"binance\\\",\\\"gate\\\",\\\"hyperliquid\\\",\\\"kucoin\\\",\\\"okx\\\",]\\\"venues\\\":{\\\"binance\\\":{\\\"n\\\":3\\\"sum\\\":\\\"9100000000000\\\"}\\\"gate\\\":{\\\"n\\\":3\\\"sum\\\":\\\"-21000000000000\\\"}\\\"hyperliquid\\\":{\\\"n\\\":24\\\"sum\\\":\\\"-40467600000000\\\"}\\\"kucoin\\\":{\\\"n\\\":3\\\"sum\\\":\\\"71000000000000\\\"}\\\"okx\\\":{\\\"n\\\":3\\\"sum\\\":\\\"-25993466632300\\\"}}}\"}"
+      },
+      "stored": {
+        "asset": "BTC",
+        "from": 1791676800,
+        "median": "-21000000000000",
+        "to": 1791763200,
+        "used": [
+          "binance",
+          "gate",
+          "hyperliquid",
+          "kucoin",
+          "okx"
+        ],
+        "venues": {
+          "binance": {
+            "n": 3,
+            "sum": "9100000000000"
+          },
+          "gate": {
+            "n": 3,
+            "sum": "-21000000000000"
+          },
+          "hyperliquid": {
+            "n": 24,
+            "sum": "-40467600000000"
+          },
+          "kucoin": {
+            "n": 3,
+            "sum": "71000000000000"
+          },
+          "okx": {
+            "n": 3,
+            "sum": "-25993466632300"
+          }
+        }
+      }
+    },
+    {
+      "label": "btc-week",
+      "asset": "BTC",
+      "from": 1791158400,
+      "to": 1791763200,
+      "why": "7-day window: 21 prints per 8h venue, 168 on Hyperliquid",
+      "tx": {
+        "hash": "0x26054ea18696e29d6737248b2844543f66df20769217470d3968e88c73cce805",
+        "status": "ACCEPTED",
+        "exec": "SUCCESS",
+        "error": null,
+        "votes": [
+          "AGREE",
+          "AGREE",
+          "AGREE",
+          "IDLE",
+          "IDLE"
+        ],
+        "rotations_left": "3",
+        "message": "{\"readable\":\"{\\\"asset\\\":\\\"BTC\\\"\\\"cached\\\":false\\\"from\\\":1791158400\\\"median\\\":\\\"458361448521800\\\"\\\"to\\\":1791763200\\\"used\\\":[\\\"binance\\\",\\\"gate\\\",\\\"hyperliquid\\\",\\\"kucoin\\\",\\\"okx\\\",]\\\"venues\\\":{\\\"binance\\\":{\\\"n\\\":21\\\"sum\\\":\\\"104920000000000\\\"}\\\"gate\\\":{\\\"n\\\":21\\\"sum\\\":\\\"178000000000000\\\"}\\\"hyperliquid\\\":{\\\"n\\\":168\\\"sum\\\":\\\"1300028500000000\\\"}\\\"kucoin\\\":{\\\"n\\\":21\\\"sum\\\":\\\"1018000000000000\\\"}\\\"okx\\\":{\\\"n\\\":21\\\"sum\\\":\\\"458361448521800\\\"}}}\"}"
+      },
+      "stored": {
+        "asset": "BTC",
+        "from": 1791158400,
+        "median": "458361448521800",
+        "to": 1791763200,
+        "used": [
+          "binance",
+          "gate",
+          "hyperliquid",
+          "kucoin",
+          "okx"
+        ],
+        "venues": {
+          "binance": {
+            "n": 21,
+            "sum": "104920000000000"
+          },
+          "gate": {
+            "n": 21,
+            "sum": "178000000000000"
+          },
+          "hyperliquid": {
+            "n": 168,
+            "sum": "1300028500000000"
+          },
+          "kucoin": {
+            "n": 21,
+            "sum": "1018000000000000"
+          },
+          "okx": {
+            "n": 21,
+            "sum": "458361448521800"
+          }
+        }
+      }
+    },
+    {
+      "label": "eth-1103",
+      "asset": "ETH",
+      "from": 1793664000,
+      "to": 1793750400,
+      "why": "a second asset",
+      "tx": {
+        "hash": "0x9838e3f88d4d738c99c6ca0c6664cb0f5f9395c961e4273c2aca514e4d571206",
+        "status": "ACCEPTED",
+        "exec": "SUCCESS",
+        "error": null,
+        "votes": [
+          "AGREE",
+          "AGREE",
+          "IDLE",
+          "IDLE",
+          "AGREE"
+        ],
+        "rotations_left": "3",
+        "message": "{\"readable\":\"{\\\"asset\\\":\\\"ETH\\\"\\\"cached\\\":false\\\"from\\\":1793664000\\\"median\\\":\\\"279958522323300\\\"\\\"to\\\":1793750400\\\"used\\\":[\\\"binance\\\",\\\"gate\\\",\\\"hyperliquid\\\",\\\"kucoin\\\",\\\"okx\\\",]\\\"venues\\\":{\\\"binance\\\":{\\\"n\\\":3\\\"sum\\\":\\\"288330000000000\\\"}\\\"gate\\\":{\\\"n\\\":3\\\"sum\\\":\\\"249000000000000\\\"}\\\"hyperliquid\\\":{\\\"n\\\":24\\\"sum\\\":\\\"300000000000000\\\"}\\\"kucoin\\\":{\\\"n\\\":3\\\"sum\\\":\\\"226000000000000\\\"}\\\"okx\\\":{\\\"n\\\":3\\\"sum\\\":\\\"279958522323300\\\"}}}\"}"
+      },
+      "stored": {
+        "asset": "ETH",
+        "from": 1793664000,
+        "median": "279958522323300",
+        "to": 1793750400,
+        "used": [
+          "binance",
+          "gate",
+          "hyperliquid",
+          "kucoin",
+          "okx"
+        ],
+        "venues": {
+          "binance": {
+            "n": 3,
+            "sum": "288330000000000"
+          },
+          "gate": {
+            "n": 3,
+            "sum": "249000000000000"
+          },
+          "hyperliquid": {
+            "n": 24,
+            "sum": "300000000000000"
+          },
+          "kucoin": {
+            "n": 3,
+            "sum": "226000000000000"
+          },
+          "okx": {
+            "n": 3,
+            "sum": "279958522323300"
+          }
+        }
+      }
+    },
+    {
+      "label": "nope-1014",
+      "asset": "NOPE",
+      "from": 1791936000,
+      "to": 1792022400,
+      "why": "an asset no venue lists",
+      "tx": {
+        "hash": "0xd8162b72855c61c258655751cbdb4fb3464de0a4738e54dcaa7ac1bfcb89c93b",
+        "status": "ACCEPTED",
+        "exec": "ERROR",
+        "error": null,
+        "votes": [
+          "AGREE",
+          "IDLE",
+          "AGREE",
+          "AGREE",
+          "IDLE"
+        ],
+        "rotations_left": "3",
+        "message": "[EXTERNAL] only 0 venues have complete NOPE funding for 1791936000-1792022400 (none)"
+      },
+      "stored": {}
+    }
+  ],
+  "swaps": [
+    {
+      "label": "live",
+      "id": 0,
+      "maker_pays_fixed": true,
+      "fixed": "0.0001",
+      "cap": "0.0001",
+      "notional": "10000000000000000000000",
+      "margin": "1000000000000000000",
+      "propose": {
+        "hash": "0xd16e66d7c0de53e60007f42478de1706d168bf69c13e53b8df94317b9dea5556",
+        "status": "ACCEPTED",
+        "exec": "SUCCESS",
+        "error": null,
+        "votes": [
+          "AGREE",
+          "IDLE",
+          "AGREE",
+          "AGREE",
+          "IDLE"
+        ],
+        "rotations_left": "3",
+        "message": "{\"readable\":\"0\"}"
+      },
+      "accept": {
+        "hash": "0xf7f130ae6ee048ec1f0a2a6de902d165e1fa239ac665ea87b348f5b0d92f8452",
+        "status": "ACCEPTED",
+        "exec": "SUCCESS",
+        "error": null,
+        "votes": [
+          "AGREE",
+          "IDLE",
+          "AGREE",
+          "IDLE",
+          "AGREE"
+        ],
+        "rotations_left": "3",
+        "message": "{\"readable\":\"1000000000000000000\"}"
+      },
+      "state": {
+        "asset": "BTC",
+        "bal_maker": "1000000000000000000",
+        "bal_taker": "1000000000000000000",
+        "cap": "100000000000000",
+        "close_votes": "",
+        "end_period": 1,
+        "fixed": "100000000000000",
+        "maker": "0x85B160D00A414a9aA2EA9290E67B9B31004C2b42",
+        "maker_pays_fixed": true,
+        "margin": "1000000000000000000",
+        "n_periods": 1,
+        "notional": "10000000000000000000000",
+        "period_s": 28800,
+        "settled": 0,
+        "start": 1793808000,
+        "status": "active",
+        "taker": "0xCDda42a5f3BC25626D6837cA14F7355202E11e74",
+        "taker_only": ""
+      }
+    },
+    {
+      "label": "cancelled",
+      "id": 1,
+      "maker_pays_fixed": false,
+      "fixed": "0.00008",
+      "cap": "0.0001",
+      "notional": "10000000000000000000000",
+      "margin": "1000000000000000000",
+      "propose": {
+        "hash": "0xcdeec24c94605fd62a0fa2caa62760104033be1117ef622601daa7c831928068",
+        "status": "FINALIZED",
+        "exec": "SUCCESS",
+        "error": null,
+        "votes": [
+          "AGREE",
+          "IDLE",
+          "AGREE",
+          "AGREE",
+          "IDLE"
+        ],
+        "rotations_left": "3",
+        "message": "{\"readable\":\"1\"}"
+      },
+      "cancel": {
+        "hash": "0xe03a672371c6d118de967b26d98ad6a2f56537843c8400c51957fac43f1f9478",
+        "status": "ACCEPTED",
+        "exec": "SUCCESS",
+        "error": null,
+        "votes": [
+          "AGREE",
+          "AGREE",
+          "IDLE",
+          "AGREE",
+          "IDLE"
+        ],
+        "rotations_left": "3",
+        "message": "{\"readable\":\"1000000000000000000\"}"
+      },
+      "state": {
+        "asset": "BTC",
+        "bal_maker": 0,
+        "bal_taker": 0,
+        "cap": "100000000000000",
+        "close_votes": "",
+        "end_period": 1,
+        "fixed": "80000000000000",
+        "maker": "0x85B160D00A414a9aA2EA9290E67B9B31004C2b42",
+        "maker_pays_fixed": false,
+        "margin": "1000000000000000000",
+        "n_periods": 1,
+        "notional": "10000000000000000000000",
+        "period_s": 28800,
+        "settled": 0,
+        "start": 1793808000,
+        "status": "cancelled",
+        "taker": "",
+        "taker_only": ""
+      }
+    },
+    {
+      "label": "closed-early",
+      "id": 2,
+      "maker_pays_fixed": false,
+      "fixed": "0.00008",
+      "cap": "0.0001",
+      "notional": "10000000000000000000000",
+      "margin": "1000000000000000000",
+      "propose": {
+        "hash": "0x0f8e614616b851b2dadc939728df77d1d5fc173956e27aef2b0fca67914db521",
+        "status": "ACCEPTED",
+        "exec": "SUCCESS",
+        "error": null,
+        "votes": [
+          "AGREE",
+          "IDLE",
+          "AGREE",
+          "AGREE",
+          "IDLE"
+        ],
+        "rotations_left": "3",
+        "message": "{\"readable\":\"2\"}"
+      },
+      "accept": {
+        "hash": "0xcc44ca6bdea3e9b099c99407874b13808580c92f2bc87cb965cc50fd9c886ec3",
+        "status": "ACCEPTED",
+        "exec": "SUCCESS",
+        "error": null,
+        "votes": [
+          "AGREE",
+          "AGREE",
+          "AGREE",
+          "IDLE",
+          "AGREE"
+        ],
+        "rotations_left": "3",
+        "message": "{\"readable\":\"1000000000000000000\"}"
+      },
+      "close": [
+        {
+          "hash": "0xf91b09d51428072bdaf3673b50de6cd3a4264a29e67c32e2723b9567e486ea5b",
+          "status": "ACCEPTED",
+          "exec": "SUCCESS",
+          "error": null,
+          "votes": [
+            "AGREE",
+            "AGREE",
+            "IDLE",
+            "AGREE",
+            "IDLE"
+          ],
+          "rotations_left": "3",
+          "message": "{\"readable\":\"{\\\"close_votes\\\":\\\"maker\\\"\\\"end_period\\\":1\\\"status\\\":\\\"active\\\"}\"}"
+        },
+        {
+          "hash": "0x63df65172d8970bc0c1a99fced6ae57888c4f1ee61429256f06169904d085443",
+          "status": "ACCEPTED",
+          "exec": "SUCCESS",
+          "error": null,
+          "votes": [
+            "AGREE",
+            "IDLE",
+            "IDLE",
+            "AGREE",
+            "AGREE"
+          ],
+          "rotations_left": "3",
+          "message": "{\"readable\":\"{\\\"close_votes\\\":\\\"maker,taker\\\"\\\"end_period\\\":0\\\"status\\\":\\\"closed\\\"}\"}"
+        }
+      ],
+      "state": {
+        "asset": "BTC",
+        "bal_maker": 0,
+        "bal_taker": 0,
+        "cap": "100000000000000",
+        "close_votes": "maker,taker",
+        "end_period": 0,
+        "fixed": "80000000000000",
+        "maker": "0x85B160D00A414a9aA2EA9290E67B9B31004C2b42",
+        "maker_pays_fixed": false,
+        "margin": "1000000000000000000",
+        "n_periods": 1,
+        "notional": "10000000000000000000000",
+        "period_s": 28800,
+        "settled": 0,
+        "start": 1793808000,
+        "status": "closed",
+        "taker": "0xCDda42a5f3BC25626D6837cA14F7355202E11e74",
+        "taker_only": ""
+      }
+    }
+  ],
+  "start": 1793808000
+}
