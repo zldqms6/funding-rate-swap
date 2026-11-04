@@ -1,0 +1,26 @@
+{
+ "asset": "BTC",
+ "from": 1791676800,
+ "to": 1791763200,
+ "captured": "2026-11-04T07:42:54+00:00",
+ "binance": {
+  "status": 200,
+  "body": "[{\"symbol\":\"BTCUSDT\",\"fundingTime\":1791705600000,\"fundingRate\":\"-0.00000993\",\"markPrice\":\"82980.80000000\",\"rateType\":\"Regular\"},{\"symbol\":\"BTCUSDT\",\"fundingTime\":1791734400002,\"fundingRate\":\"0.00001347\",\"markPrice\":\"83868.70000000\",\"rateType\":\"Regular\"},{\"symbol\":\"BTCUSDT\",\"fundingTime\":1791763200006,\"fundingRate\":\"0.00000556\",\"markPrice\":\"83723.00000000\",\"rateType\":\"Regular\"}]"
+ },
+ "okx": {
+  "status": 200,
+  "body": "{\"code\":\"0\",\"data\":[{\"formulaType\":\"withRate\",\"fundingRate\":\"-0.0000105750806368\",\"fundingTime\":\"1791763200000\",\"instId\":\"BTC-USDT-SWAP\",\"instType\":\"SWAP\",\"method\":\"current_period\",\"realizedRate\":\"-0.0000105750806368\"},{\"formulaType\":\"withRate\",\"fundingRate\":\"-0.0000000008035808\",\"fundingTime\":\"1791734400000\",\"instId\":\"BTC-USDT-SWAP\",\"instType\":\"SWAP\",\"method\":\"current_period\",\"realizedRate\":\"-0.0000000008035808\"},{\"formulaType\":\"withRate\",\"fundingRate\":\"-0.0000154175824147\",\"fundingTime\":\"1791705600000\",\"instId\":\"BTC-USDT-SWAP\",\"instType\":\"SWAP\",\"method\":\"current_period\",\"realizedRate\":\"-0.0000154175824147\"}],\"msg\":\"\"}"
+ },
+ "gate": {
+  "status": 200,
+  "body": "[{\"r\":\"0.00001\",\"t\":1791763200},{\"r\":\"-0.000008\",\"t\":1791734400},{\"r\":\"-0.000023\",\"t\":1791705600}]"
+ },
+ "kucoin": {
+  "status": 200,
+  "body": "{\"code\":\"200000\",\"data\":[{\"symbol\":\"XBTUSDTM\",\"fundingRate\":3.5E-5,\"timepoint\":1791763200000},{\"symbol\":\"XBTUSDTM\",\"fundingRate\":3.5E-5,\"timepoint\":1791734400000},{\"symbol\":\"XBTUSDTM\",\"fundingRate\":1.0E-6,\"timepoint\":1791705600000}]}"
+ },
+ "hyperliquid": {
+  "status": 200,
+  "body": "[{\"coin\":\"BTC\",\"fundingRate\":\"-0.0000124955\",\"premium\":\"-0.0005999636\",\"time\":1791680400025},{\"coin\":\"BTC\",\"fundingRate\":\"-0.0000105651\",\"premium\":\"-0.0005845211\",\"time\":1791684000065},{\"coin\":\"BTC\",\"fundingRate\":\"-0.0000009412\",\"premium\":\"-0.0005075299\",\"time\":1791687600010},{\"coin\":\"BTC\",\"fundingRate\":\"-0.0000040869\",\"premium\":\"-0.0005326949\",\"time\":1791691200017},{\"coin\":\"BTC\",\"fundingRate\":\"-0.000002587\",\"premium\":\"-0.0005206962\",\"time\":1791694800004},{\"coin\":\"BTC\",\"fundingRate\":\"-0.0000113697\",\"premium\":\"-0.0005909574\",\"time\":1791698400065},{\"coin\":\"BTC\",\"fundingRate\":\"-0.0000104149\",\"premium\":\"-0.0005833192\",\"time\":1791702000000},{\"coin\":\"BTC\",\"fundingRate\":\"-0.0000026456\",\"premium\":\"-0.0005211648\",\"time\":1791705600025},{\"coin\":\"BTC\",\"fundingRate\":\"-0.0000064234\",\"premium\":\"-0.000551387\",\"time\":1791709200062},{\"coin\":\"BTC\",\"fundingRate\":\"-0.0000068496\",\"premium\":\"-0.0005547966\",\"time\":1791712800033},{\"coin\":\"BTC\",\"fundingRate\":\"-0.000013981\",\"premium\":\"-0.0006118477\",\"time\":1791716400045},{\"coin\":\"BTC\",\"fundingRate\":\"-0.0000079101\",\"premium\":\"-0.0005632809\",\"time\":1791720000079},{\"coin\":\"BTC\",\"fundingRate\":\"-0.0000124082\",\"premium\":\"-0.0005992653\",\"time\":1791723600000},{\"coin\":\"BTC\",\"fundingRate\":\"-0.0000104625\",\"premium\":\"-0.0005837002\",\"time\":1791727200020},{\"coin\":\"BTC\",\"fundingRate\":\"-0.0000068682\",\"premium\":\"-0.0005549454\",\"time\":1791730800027},{\"coin\":\"BTC\",\"fundingRate\":\"0.0000084933\",\"premium\":\"-0.0004320533\",\"time\":1791734400000},{\"coin\":\"BTC\",\"fundingRate\":\"0.0000079233\",\"premium\":\"-0.0004366137\",\"time\":1791738000030},{\"coin\":\"BTC\",\"fundingRate\":\"0.0000098415\",\"premium\":\"-0.0004212683\",\"time\":1791741600025},{\"coin\":\"BTC\",\"fundingRate\":\"0.0000125\",\"premium\":\"-0.0003987183\",\"time\":1791745200049},{\"coin\":\"BTC\",\"fundingRate\":\"0.0000125\",\"premium\":\"-0.0003922562\",\"time\":1791748800013},{\"coin\":\"BTC\",\"fundingRate\":\"0.0000092525\",\"premium\":\"-0.0004259797\",\"time\":1791752400000},{\"coin\":\"BTC\",\"fundingRate\":\"0.0000043339\",\"premium\":\"-0.000465329\",\"time\":1791756000114},{\"coin\":\"BTC\",\"fundingRate\":\"0.0000109648\",\"premium\":\"-0.0004122816\",\"time\":1791759600073},{\"coin\":\"BTC\",\"fundingRate\":\"0.000003732\",\"premium\":\"-0.000470144\",\"time\":1791763200118}]"
+ }
+}

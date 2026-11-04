@@ -1,0 +1,26 @@
+{
+ "asset": "NOPE",
+ "from": 1791936000,
+ "to": 1792022400,
+ "captured": "2026-11-04T07:42:56+00:00",
+ "binance": {
+  "status": 200,
+  "body": "[]"
+ },
+ "okx": {
+  "status": 200,
+  "body": "{\"code\":\"51001\",\"data\":[],\"msg\":\"Instrument ID, Instrument ID code, or Spread ID doesn't exist.\"}"
+ },
+ "gate": {
+  "status": 400,
+  "body": "{\"label\":\"CONTRACT_NOT_FOUND\"}"
+ },
+ "kucoin": {
+  "status": 200,
+  "body": "{\"msg\":\"This contract does not exist.\",\"code\":\"404000\"}"
+ },
+ "hyperliquid": {
+  "status": 500,
+  "body": "null"
+ }
+}
