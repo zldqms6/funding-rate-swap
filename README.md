@@ -97,11 +97,11 @@ What I take from it:
 
 | Swap | Steps | Result |
 |---|---|---|
-| #0 maker pays 0.01% fixed | propose, accept | `active`, 1 GEN on each side |
+| #0 maker pays 0.01% fixed | propose, accept, settle after the period (2026-11-05 00:11 UTC) | floating **0.2405 bp** vs fixed 1 bp: maker paid taker **0.7595 GEN**, `closed`, margins paid out (maker 0.2405, taker 1.7595 GEN) |
 | #1 maker receives 0.008% fixed | propose, cancel | `cancelled`, maker refunded |
 | #2 maker receives 0.008% fixed | propose, accept, request_close by both before start | `closed`, `end_period` 0, both refunded |
 
-**Not done yet:** swap #0's period ends 2026-11-05 00:00 UTC. `live_demo.mjs` is waiting to call `settle` at 00:11 UTC. If that process is gone, `node scripts/live_demo.mjs 0x19d9723C681C74C755bEf8413F5a9E6134731B4E resume` does the settlement and records it. The settlement code is the same `_fixing` path as the fixings above, plus the arithmetic covered by the tests, but a live settlement on Studionet is not recorded here yet.
+The settlement fixing for 2026-11-04 16:00 to 11-05 00:00 UTC (BTC, bp): Binance **0.24**, OKX 0.75, Gate 0.80, KuCoin 0.18, Hyperliquid -0.25, median 0.2405 (Binance). The settle transaction (`0xf088396d...`) was ACCEPTED, leader SUCCESS, votes AGREE x3 / IDLE x2, all five venues complete. Nobody had fixed that window before, so the validators fetched it live inside `settle`.
 
 ## API
 
