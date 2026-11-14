@@ -30,10 +30,18 @@ covered in full and neither side can default.
 
 No LLM is involved: funding history is published numbers. Settled funding prints
 never change, so every validator computes the same sum for a venue and compares
-it exactly. What can differ between nodes is which venues answer at all, so a
-validator accepts the leader only if every venue they both saw matches exactly,
-it checked at least three venues itself, and the median over everything it can
-see (plus what only the leader saw) is the leader's median.
+it exactly. What can differ between nodes is which venues answer at all.
+
+Consensus: a fixing is stored when a majority of validators agree with the
+leader. A validator agrees only if
+  1. it fetched every venue the leader used itself and got exactly the same sum,
+     so it never vouches for a venue number it did not see, and
+  2. the median of all the venues it fetched itself is the leader's median, so
+     a leader can't move the median by leaving out a venue either.
+Every validator that agrees has therefore computed the stored median from its
+own data, and the margin transfer is a pure function of that median and the
+swap. A validator that could not reach a venue the leader used disagrees: if
+too few validators agree, nothing is stored and the fixing can be tried again.
 """
 from genlayer import *
 from dataclasses import dataclass
@@ -235,7 +243,8 @@ def compute_fixing(asset: str, ps: int, pe: int) -> dict:
 
 
 def fixing_ok(leader, mine: dict, asset: str, ps: int, pe: int) -> bool:
-    """Validator: does this node's own view of the venues support the leader's median?"""
+    """Validator: is the leader's median exactly what this node computes from the
+    venues it fetched itself? Leader numbers it could not check are never trusted."""
     try:
         if (leader["asset"], leader["from"], leader["to"]) != (asset, ps, pe):
             return False
@@ -253,15 +262,10 @@ def fixing_ok(leader, mine: dict, asset: str, ps: int, pe: int) -> bool:
     except Exception:
         return False
     ours = _values(mine)
-    both = set(ours) & set(theirs)
-    if any(ours[v] != theirs[v] for v in both):
-        return False                          # settled history is the same for everyone
-    if len(both) < MIN_VENUES:
-        return False                          # never vouch for a median we mostly couldn't check
+    if any(v not in ours or ours[v] != theirs[v] for v in theirs):
+        return False                          # a venue we couldn't see, or a number we didn't get
     # a venue the leader left out but we have still counts: dropping data can't move the median
-    union = dict(theirs)
-    union.update(ours)
-    return median(list(union.values())) == int(leader["median"])
+    return median(list(ours.values())) == int(leader["median"])
 
 
 def _errors_agree(leader_res, leader_fn) -> bool:

@@ -3,6 +3,7 @@ from decimal import Decimal
 from pathlib import Path
 
 CONTRACT = "contracts/funding_rate_swap.py"
+GENVM = "v0.2.16"
 FIX = Path(__file__).parent / "fixtures"
 GEN = 10**18
 WAD = 10**18
@@ -119,7 +120,7 @@ def accept(vm, c, taker, sid):
 
 def test_fixing_takes_the_median_so_one_venue_cant_move_it(direct_vm, direct_deploy, direct_alice):
     # 2026-10-14: Binance paid -0.44 bp for the day, Hyperliquid +2.79 bp
-    c = direct_deploy(CONTRACT)
+    c = direct_deploy(CONTRACT, sdk_version=GENVM)
     out = fix(direct_vm, c, "btc_1014", direct_alice)
     exp = expected("btc_1014")
     assert {v: int(out["venues"][v]["sum"]) for v in VENUES} == exp
@@ -136,7 +137,7 @@ def test_fixing_takes_the_median_so_one_venue_cant_move_it(direct_vm, direct_dep
 
 
 def test_negative_funding_day(direct_vm, direct_deploy, direct_alice):
-    c = direct_deploy(CONTRACT)
+    c = direct_deploy(CONTRACT, sdk_version=GENVM)
     out = fix(direct_vm, c, "btc_1011", direct_alice)
     exp = expected("btc_1011")
     assert int(out["median"]) == med(exp.values()) < 0
@@ -144,7 +145,7 @@ def test_negative_funding_day(direct_vm, direct_deploy, direct_alice):
 
 
 def test_week_window_lines_up_hourly_and_8h_venues(direct_vm, direct_deploy, direct_alice):
-    c = direct_deploy(CONTRACT)
+    c = direct_deploy(CONTRACT, sdk_version=GENVM)
     out = fix(direct_vm, c, "btc_week", direct_alice)
     assert [out["venues"][v]["n"] for v in VENUES] == [21, 21, 21, 21, 168]
     assert int(out["median"]) == med(expected("btc_week").values())
@@ -152,7 +153,7 @@ def test_week_window_lines_up_hourly_and_8h_venues(direct_vm, direct_deploy, dir
 
 
 def test_fix_input_rules(direct_vm, direct_deploy, direct_alice):
-    c = direct_deploy(CONTRACT)
+    c = direct_deploy(CONTRACT, sdk_version=GENVM)
     f, t = FX["btc_1014"]["from"], FX["btc_1014"]["to"]
     direct_vm.warp(at(t + 300))
     for args, msg in [
@@ -168,7 +169,7 @@ def test_fix_input_rules(direct_vm, direct_deploy, direct_alice):
 # ---------- validators ----------
 
 def test_validator_rejects_a_false_leader(direct_vm, direct_deploy, direct_alice):
-    c = direct_deploy(CONTRACT)
+    c = direct_deploy(CONTRACT, sdk_version=GENVM)
     honest = fix(direct_vm, c, "btc_1014", direct_alice)
     honest.pop("cached")
     exp = expected("btc_1014")
@@ -196,30 +197,102 @@ def test_validator_rejects_a_false_leader(direct_vm, direct_deploy, direct_alice
 
 
 def test_validator_that_cannot_reach_a_venue(direct_vm, direct_deploy, direct_alice):
-    c = direct_deploy(CONTRACT)
+    # 2026-11-15 fix. The reviewer's case: this validator gets no answer from KuCoin,
+    # and the leader reports a KuCoin number that is not what KuCoin published and that
+    # moves the median. The old rule agreed (it checked the other four and trusted the
+    # leader's KuCoin); the new rule never accepts a venue number it did not fetch.
+    c = direct_deploy(CONTRACT, sdk_version=GENVM)
     honest = fix(direct_vm, c, "btc_1014", direct_alice)
     honest.pop("cached")
     exp = expected("btc_1014")
-    # this validator gets Binance's real geo-block answer: it checks the other four and agrees
-    serve(direct_vm, "btc_1014", override={"binance": (451, '{"code":0,"msg":"Service unavailable from a restricted location"}')})
-    assert direct_vm.run_validator() is True
-    # the known weakness: a leader inventing a KuCoin number fools a validator that can't see KuCoin...
     v = json.loads(json.dumps(honest["venues"]))
     v["kucoin"]["sum"] = str(exp["gate"] - BP)
     fake = dict(honest, venues=v, median=str(med([exp["binance"], exp["okx"], exp["gate"], exp["gate"] - BP, exp["hyperliquid"]])))
     assert int(fake["median"]) != int(honest["median"])
     serve(direct_vm, "btc_1014", override={"kucoin": (503, "")})
-    assert direct_vm.run_validator(leader_result=fake) is True
-    # ...but every validator that does see KuCoin rejects it
+    assert direct_vm.run_validator(leader_result=fake) is False
+    # it also refuses the honest leader: it can't tell the two apart, so it vouches for neither
+    assert direct_vm.run_validator(leader_result=honest) is False
+    # even an invented KuCoin number that lands exactly on this validator's own four-venue
+    # median is refused: the median would match, but the stored KuCoin sum is unchecked
+    own4 = med([exp["binance"], exp["okx"], exp["gate"], exp["hyperliquid"]])
+    v = json.loads(json.dumps(honest["venues"]))
+    v["kucoin"]["sum"] = str(own4)
+    planted = dict(honest, venues=v, median=str(own4))
+    assert med([exp["binance"], exp["okx"], exp["gate"], own4, exp["hyperliquid"]]) == own4
+    assert direct_vm.run_validator(leader_result=planted) is False
+    # Binance's real geo-block answer: same thing, the leader's Binance number is unchecked
+    serve(direct_vm, "btc_1014", override={"binance": (451, '{"code":0,"msg":"Service unavailable from a restricted location"}')})
+    assert direct_vm.run_validator(leader_result=honest) is False
+    # every validator that does see KuCoin rejects the fake and accepts the honest leader
     serve(direct_vm, "btc_1014")
     assert direct_vm.run_validator(leader_result=fake) is False
+    assert direct_vm.run_validator(leader_result=honest) is True
     # a validator that only reaches two venues never vouches for a median
     serve(direct_vm, "btc_1014", override={"binance": (503, ""), "okx": (503, ""), "gate": (503, "")})
     assert direct_vm.run_validator(leader_result=honest) is False
 
 
+def test_no_unobserved_venue_can_move_an_accepted_fixing(direct_vm, direct_deploy, direct_alice):
+    # For every venue a validator can't reach, and a leader number for it pushed far down,
+    # far up, or left honest: whenever the validator agrees, the median it agreed to is
+    # the one it computes from its own fetches. On 2026-10-14 the old rule agreed to a
+    # moved median in these cases (Binance and Hyperliquid are the outliers, so moving the
+    # middle three moves the median).
+    c = direct_deploy(CONTRACT, sdk_version=GENVM)
+    honest = fix(direct_vm, c, "btc_1014", direct_alice)
+    honest.pop("cached")
+    exp = expected("btc_1014")
+    moved = 0
+    for gone in VENUES:
+        for shift in (-50 * BP, 50 * BP, 0):
+            vals = dict(exp, **{gone: exp[gone] + shift})
+            v = json.loads(json.dumps(honest["venues"]))
+            v[gone]["sum"] = str(vals[gone])
+            leader = dict(honest, venues=v, median=str(med(vals.values())))
+            moved += int(leader["median"]) != int(honest["median"])
+            serve(direct_vm, "btc_1014", override={gone: (503, "")})
+            assert direct_vm.run_validator(leader_result=leader) is False, (gone, shift)
+    assert moved >= 6
+    # with the venue down for the leader too, the four-venue median is checked in full
+    for gone in VENUES:
+        v = json.loads(json.dumps(honest["venues"]))
+        v[gone] = {"miss": "HTTP 503", "transient": True}
+        four = [exp[x] for x in VENUES if x != gone]
+        leader = dict(honest, venues=v, used=sorted(set(VENUES) - {gone}), median=str(med(four)))
+        serve(direct_vm, "btc_1014", override={gone: (503, "")})
+        assert direct_vm.run_validator(leader_result=leader) is True, gone
+        assert direct_vm.run_validator(leader_result=dict(leader, median=str(med(four) + 1))) is False
+
+
+def test_settlement_does_not_depend_on_which_venues_a_validator_reached(direct_vm, direct_deploy, direct_alice, direct_bob):
+    # A swap settles on 2026-10-14 while Hyperliquid is down for the leader and for this
+    # validator: both see the same four venues, the validator agrees, and the transfer is
+    # the four-venue median. A validator that still reaches Hyperliquid disagrees with that
+    # fixing (its own median differs), and one that also misses Binance can't check the
+    # leader's Binance number and disagrees (the old rule agreed here). So the stored
+    # transfer is always the one an agreeing validator computed itself.
+    c = direct_deploy(CONTRACT, sdk_version=GENVM)
+    start = FX["btc_1014"]["from"]
+    sid = propose(direct_vm, c, direct_alice, start)
+    accept(direct_vm, c, direct_bob, sid)
+    direct_vm.warp(at(start + 86_400 + 900))
+    down = {"hyperliquid": (503, "")}
+    serve(direct_vm, "btc_1014", override=down)
+    out = c.settle(sid)
+    exp = expected("btc_1014")
+    four = med([exp[v] for v in VENUES if v != "hyperliquid"])
+    assert out["used"] == ["binance", "gate", "kucoin", "okx"] and out["floating"] == str(four)
+    assert out["paid"] == 10_000 * GEN * (3 * BP - four) // WAD and out["payer"] == "maker"
+    assert direct_vm.run_validator() is True
+    serve(direct_vm, "btc_1014")
+    assert med(exp.values()) != four
+    assert direct_vm.run_validator() is False
+    serve(direct_vm, "btc_1014", override=dict(down, binance=(451, "{}")))
+    assert direct_vm.run_validator() is False
+
 def test_one_venue_down_for_everyone_falls_back_to_the_other_four(direct_vm, direct_deploy, direct_alice):
-    c = direct_deploy(CONTRACT)
+    c = direct_deploy(CONTRACT, sdk_version=GENVM)
     out = fix(direct_vm, c, "btc_1014", direct_alice, override={"binance": (451, '{"code":0,"msg":"restricted"}')})
     exp = expected("btc_1014")
     assert out["used"] == ["gate", "hyperliquid", "kucoin", "okx"]
@@ -230,7 +303,7 @@ def test_one_venue_down_for_everyone_falls_back_to_the_other_four(direct_vm, dir
 
 def test_missing_print_excludes_that_venue(direct_vm, direct_deploy, direct_alice):
     # Hyperliquid's answer without its 13:00 print: the venue is incomplete, not "zero for that hour"
-    c = direct_deploy(CONTRACT)
+    c = direct_deploy(CONTRACT, sdk_version=GENVM)
     hl = [r for r in json.loads(FX["btc_1014"]["hyperliquid"]["body"])
           if round(r["time"] / 60_000) * 60 != FX["btc_1014"]["from"] + 13 * 3600]
     out = fix(direct_vm, c, "btc_1014", direct_alice, override={"hyperliquid": (200, json.dumps(hl))})
@@ -240,7 +313,7 @@ def test_missing_print_excludes_that_venue(direct_vm, direct_deploy, direct_alic
 
 
 def test_too_few_venues_is_transient_and_records_nothing(direct_vm, direct_deploy, direct_alice):
-    c = direct_deploy(CONTRACT)
+    c = direct_deploy(CONTRACT, sdk_version=GENVM)
     down = {"binance": (502, "<html>bad gateway</html>"), "okx": (503, ""), "gate": (429, "{}")}
     with direct_vm.expect_revert("[TRANSIENT] only 2 venues answered"):
         fix(direct_vm, c, "btc_1014", direct_alice, override=down)
@@ -250,7 +323,7 @@ def test_too_few_venues_is_transient_and_records_nothing(direct_vm, direct_deplo
 def test_unlisted_asset_is_external_and_validators_agree_on_errors(direct_vm, direct_deploy, direct_alice):
     # each venue's real answer for an unknown symbol: Binance [] , OKX 51001, Gate 400,
     # KuCoin 404000, Hyperliquid HTTP 500 "null"
-    c = direct_deploy(CONTRACT)
+    c = direct_deploy(CONTRACT, sdk_version=GENVM)
     msg = f"[EXTERNAL] only 0 venues have complete NOPE funding for {FX['nope']['from']}-{FX['nope']['to']} (none)"
     with direct_vm.expect_revert(msg):
         fix(direct_vm, c, "nope", direct_alice)
@@ -267,7 +340,7 @@ def test_unlisted_asset_is_external_and_validators_agree_on_errors(direct_vm, di
 # ---------- swaps ----------
 
 def test_propose_and_accept_rules(direct_vm, direct_deploy, direct_alice, direct_bob, direct_charlie):
-    c = direct_deploy(CONTRACT)
+    c = direct_deploy(CONTRACT, sdk_version=GENVM)
     start = FX["btc_1014"]["from"]
     direct_vm.warp(at(start - 12 * 3600))
     direct_vm.sender = direct_alice
@@ -319,7 +392,7 @@ def test_propose_and_accept_rules(direct_vm, direct_deploy, direct_alice, direct
 def test_swap_settles_on_the_median(direct_vm, direct_deploy, direct_alice, direct_bob, direct_charlie):
     # Alice pays 0.01% per 8h fixed (3 bp for the day) on 10,000 GEN; Bob receives it.
     # Floating on 2026-10-14 was the OKX number, about 1.70 bp: Alice pays Bob the difference.
-    c = direct_deploy(CONTRACT)
+    c = direct_deploy(CONTRACT, sdk_version=GENVM)
     start = FX["btc_1014"]["from"]
     sid = propose(direct_vm, c, direct_alice, start)
     accept(direct_vm, c, direct_bob, sid)
@@ -346,7 +419,7 @@ def test_swap_settles_on_the_median(direct_vm, direct_deploy, direct_alice, dire
 
 def test_cap_limits_the_payment_and_margin_always_covers_it(direct_vm, direct_deploy, direct_alice, direct_bob):
     # fixed at 0.05% per 8h against ~1.7 bp floating: the move is far past the 0.01% cap
-    c = direct_deploy(CONTRACT)
+    c = direct_deploy(CONTRACT, sdk_version=GENVM)
     start = FX["btc_1014"]["from"]
     sid = propose(direct_vm, c, direct_alice, start, fixed="0.0005", cap="0.0001")
     accept(direct_vm, c, direct_bob, sid)
@@ -359,7 +432,7 @@ def test_cap_limits_the_payment_and_margin_always_covers_it(direct_vm, direct_de
 
 
 def test_fixing_is_shared_between_swaps_and_fix(direct_vm, direct_deploy, direct_alice, direct_bob):
-    c = direct_deploy(CONTRACT)
+    c = direct_deploy(CONTRACT, sdk_version=GENVM)
     start = FX["btc_1014"]["from"]
     s1 = propose(direct_vm, c, direct_alice, start, pays_fixed=False)
     accept(direct_vm, c, direct_bob, s1)
@@ -374,7 +447,7 @@ def test_fixing_is_shared_between_swaps_and_fix(direct_vm, direct_deploy, direct
 
 def test_two_periods_with_a_sign_flip(direct_vm, direct_deploy, direct_alice, direct_bob):
     # fixed 0: Bob pays fixed and receives floating. 10-10 floating was positive, 10-11 negative.
-    c = direct_deploy(CONTRACT)
+    c = direct_deploy(CONTRACT, sdk_version=GENVM)
     start = FX["btc_1010"]["from"]
     assert FX["btc_1011"]["from"] == start + 86_400
     sid = propose(direct_vm, c, direct_alice, start, pays_fixed=False, fixed="0", n=2)
@@ -393,7 +466,7 @@ def test_two_periods_with_a_sign_flip(direct_vm, direct_deploy, direct_alice, di
 
 
 def test_mutual_close_and_cancel(direct_vm, direct_deploy, direct_alice, direct_bob, direct_charlie):
-    c = direct_deploy(CONTRACT)
+    c = direct_deploy(CONTRACT, sdk_version=GENVM)
     start = FX["btc_1010"]["from"]
     # cancel before anyone accepts
     sid = propose(direct_vm, c, direct_alice, start)
@@ -427,7 +500,7 @@ def test_mutual_close_and_cancel(direct_vm, direct_deploy, direct_alice, direct_
 
 
 def test_void_only_after_thirty_days(direct_vm, direct_deploy, direct_alice, direct_bob):
-    c = direct_deploy(CONTRACT)
+    c = direct_deploy(CONTRACT, sdk_version=GENVM)
     start = FX["btc_1010"]["from"]
     sid = propose(direct_vm, c, direct_alice, start)
     accept(direct_vm, c, direct_bob, sid)
@@ -441,7 +514,7 @@ def test_void_only_after_thirty_days(direct_vm, direct_deploy, direct_alice, dir
 
 def test_rate_parser_handles_every_venue_format(direct_vm, direct_deploy):
     # quote_margin runs the same parser as the venue data: KuCoin sends 1.0E-4, OKX 16 decimals
-    c = direct_deploy(CONTRACT)
+    c = direct_deploy(CONTRACT, sdk_version=GENVM)
     one = 10**18
     assert c.quote_margin(one, "1.0E-4", 28_800, 1) == BP
     assert c.quote_margin(one, "0.0000954849645099", 28_800, 1) == 95_484_964_509_900
