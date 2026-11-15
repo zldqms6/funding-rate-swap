@@ -110,11 +110,11 @@ Every transaction is `ACCEPTED` with leader `SUCCESS`; validators that voted all
 
 | Swap | Steps | Result |
 |---|---|---|
-| #0 maker pays 0.01% fixed | propose `0xed504145...`, accept `0xcbc976ea...` | `active`, 1 GEN on each side; settles after 2026-11-15 16:10 UTC |
+| #0 maker pays 0.01% fixed | propose `0xed504145...`, accept `0xcbc976ea...`, settle `0xdbd08b77...` after the period (2026-11-15 16:11 UTC) | floating **0.04 bp** vs fixed 1 bp: maker paid taker **0.96 GEN**, `closed`, margins paid out (maker 0.04, taker 1.96 GEN) |
 | #1 maker receives 0.008% fixed | propose `0xc9d5c6a5...`, cancel `0xa5d8a2f4...` | `cancelled`, maker refunded |
 | #2 maker receives 0.008% fixed | propose `0xb760a829...`, accept `0x437d3dba...`, request_close by both (`0x0f0782e2...`, `0xf7349655...`) | `closed`, `end_period` 0, both refunded |
 
-Settlement of swap #0 had not happened yet when this was committed: its period ends at 16:00 UTC and `settle` is allowed 10 minutes later. The result will be added here from `demo_result.json` once it has run; until then nothing in this section claims a live settlement on the fixed contract.
+The settlement fixing for 2026-11-15 08:00 to 16:00 UTC (BTC, bp): Binance -0.0247, OKX 0.1178, Gate -0.06, KuCoin **0.04**, Hyperliquid 0.9839, median 0.04 (KuCoin). The settle transaction was ACCEPTED, leader SUCCESS, votes AGREE x3 / IDLE x2, all five venues complete. Nobody had fixed that window before (`fixing_cached` false), so the validators fetched it live inside `settle`, and under the new rule each agreeing validator had fetched all five venues itself.
 
 ## Earlier live run (2026-11-04, first version, replaced)
 

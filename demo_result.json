@@ -313,6 +313,95 @@
         "status": "active",
         "taker": "0xCDda42a5f3BC25626D6837cA14F7355202E11e74",
         "taker_only": ""
+      },
+      "settle": {
+        "hash": "0xdbd08b77595fede9fe4b8e9552520a811fc3d68eae2550b58e84fc80e5cfb6d4",
+        "status": "ACCEPTED",
+        "exec": "SUCCESS",
+        "error": null,
+        "votes": [
+          "AGREE",
+          "IDLE",
+          "AGREE",
+          "IDLE",
+          "AGREE"
+        ],
+        "rotations_left": "3",
+        "message": "{\"readable\":\"{\\\"capped\\\":false\\\"diff\\\":\\\"-96000000000000\\\"\\\"fixed\\\":\\\"100000000000000\\\"\\\"fixing_cached\\\":false\\\"floating\\\":\\\"4000000000000\\\"\\\"from\\\":1794729600\\\"paid\\\":960000000000000000\\\"payer\\\":\\\"maker\\\"\\\"period\\\":0\\\"status\\\":\\\"closed\\\"\\\"to\\\":1794758400\\\"used\\\":[\\\"binance\\\",\\\"gate\\\",\\\"hyperliquid\\\",\\\"kucoin\\\",\\\"okx\\\",]}\"}"
+      },
+      "period": {
+        "capped": false,
+        "diff": "-96000000000000",
+        "fixed": "100000000000000",
+        "fixing_cached": false,
+        "floating": "4000000000000",
+        "from": 1794729600,
+        "paid": "960000000000000000",
+        "payer": "maker",
+        "period": 0,
+        "to": 1794758400,
+        "used": [
+          "binance",
+          "gate",
+          "hyperliquid",
+          "kucoin",
+          "okx"
+        ]
+      },
+      "final": {
+        "asset": "BTC",
+        "bal_maker": 0,
+        "bal_taker": 0,
+        "cap": "100000000000000",
+        "close_votes": "",
+        "end_period": 1,
+        "fixed": "100000000000000",
+        "maker": "0x85B160D00A414a9aA2EA9290E67B9B31004C2b42",
+        "maker_pays_fixed": true,
+        "margin": "1000000000000000000",
+        "n_periods": 1,
+        "notional": "10000000000000000000000",
+        "period_s": 28800,
+        "settled": 1,
+        "start": 1794729600,
+        "status": "closed",
+        "taker": "0xCDda42a5f3BC25626D6837cA14F7355202E11e74",
+        "taker_only": ""
+      },
+      "fixing": {
+        "asset": "BTC",
+        "from": 1794729600,
+        "median": "4000000000000",
+        "to": 1794758400,
+        "used": [
+          "binance",
+          "gate",
+          "hyperliquid",
+          "kucoin",
+          "okx"
+        ],
+        "venues": {
+          "binance": {
+            "n": 1,
+            "sum": "-2470000000000"
+          },
+          "gate": {
+            "n": 1,
+            "sum": "-6000000000000"
+          },
+          "hyperliquid": {
+            "n": 8,
+            "sum": "98393400000000"
+          },
+          "kucoin": {
+            "n": 1,
+            "sum": "4000000000000"
+          },
+          "okx": {
+            "n": 1,
+            "sum": "11781510925600"
+          }
+        }
       }
     },
     {
